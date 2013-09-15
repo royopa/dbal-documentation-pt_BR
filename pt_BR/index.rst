@@ -31,8 +31,8 @@ Conteúdo:
    reference/caching
    reference/known-vendor-issues
 
-Indices and tables
-==================
+Índices e tabelas
+=================
 
 * :ref:`search`
 
