@@ -70,26 +70,26 @@ opções reconhecidas por cada driver.
 
 .. nota::
 
-    Ao usar uma instância PDO através da opção ``pdo``, especificar 
-    detalhes de conexão não é necessário.
+    Não é necessário especificar detalhes de conexão ao usar uma instância 
+    PDO através da opção ``pdo``.
 
 pdo\_sqlite
 ^^^^^^^^^^^
 
 
--  ``user`` (string): Usuário usádo para conectar no banco de dados.
+-  ``user`` (string): Usuário usado para conectar no banco de dados.
 -  ``password`` (string): Senha usada para conectar no banco de dados.
--  ``path`` (string): The filesystem path to the database file.
-   Mutually exclusive with ``memory``. ``path`` takes precedence.
--  ``memory`` (boolean): True if the SQLite database should be
-   in-memory (non-persistent). Mutually exclusive with ``path``.
-   ``path`` takes precedence.
+-  ``path`` (string): O caminho do arquivo da base de dados.
+   Mutualmente exclusiva com ``memory``. O ``path`` tem precedência.
+-  ``memory`` (boolean): True se a base de dados SQLite deve ser in-memory (não-persistente). 
+Mutualmente exclusiva com o ``path``.
+   ``path`` tem precedência.
 
 pdo\_mysql
 ^^^^^^^^^^
 
 
--  ``user`` (string): Usuário usádo para conectar no banco de dados.
+-  ``user`` (string): Usuário usado para conectar no banco de dados.
 -  ``password`` (string): Senha usada para conectar no banco de dados.
 -  ``host`` (string): O hostname do servidor de banco de dados.
 -  ``port`` (integer): A porta usada para conectar no banco de dados.
@@ -101,13 +101,13 @@ pdo\_pgsql
 ^^^^^^^^^^
 
 
--  ``user`` (string): Usuário usádo para conectar no banco de dados.
+-  ``user`` (string): Usuário usado para conectar no banco de dados.
 -  ``password`` (string): Senha usada para conectar no banco de dados.
 -  ``host`` (string): O hostname do servidor de banco de dados.
 -  ``port`` (integer): A porta usada para conectar no banco de dados.
 -  ``dbname`` (string): O nome da base de dados/schema para conectar no banco de dados.
 
-O PostgreSQL se comporta diferente com valores booleanos quanto você usa ou não 
+O PostgreSQL se comporta diferente com valores booleanos quando você usa ou não 
 ``PDO::ATTR_EMULATE_PREPARES``. Para alterar o uso de ``'true'`` e ``'false'`` 
 como strings você pode mudar para inteiros usando: 
 ``$conn->getDatabasePlatform()->setUseBooleanTrueFalseStrings($flag)``.
@@ -116,7 +116,7 @@ pdo\_oci / oci8
 ^^^^^^^^^^^^^^^
 
 
--  ``user`` (string): Usuário usádo para conectar no banco de dados.
+-  ``user`` (string): Usuário usado para conectar no banco de dados.
 -  ``password`` (string): Senha usada para conectar no banco de dados.
 -  ``host`` (string): O hostname do servidor de banco de dados.
 -  ``port`` (integer): A porta usada para conectar no banco de dados.
@@ -127,18 +127,18 @@ pdo\_sqlsrv
 ^^^^^^^^^^
 
 
--  ``user`` (string): Usuário usádo para conectar no banco de dados.
+-  ``user`` (string): Usuário usado para conectar no banco de dados.
 -  ``password`` (string): Senha usada para conectar no banco de dados.
 -  ``host`` (string): Hostname of the database to connect to.
 -  ``port`` (integer): A porta usada para conectar no banco de dados.
 -  ``dbname`` (string): O nome da base de dados/schema para conectar no banco de dados.
 
-Platforma Personalizada
-~~~~~~~~~~~~~~~~~~~~~~~
+Plataforma Personalizada
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 Cada driver usa uma implementação padrão do ``Doctrine\DBAL\Platforms\AbstractPlatform``. 
-Se você quiser usar uma implementação customizada, você pode passar uma instância pré-criada
-na opção ``platform`` option.
+Se quiser usar uma implementação customizada, você pode passar uma instância pré-criada
+na opção ``platform``.
 
 Opções de Driver Personalizadas
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
