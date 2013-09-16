@@ -1,11 +1,10 @@
-Configuration
-=============
+Configuração
+============
 
-Getting a Connection
---------------------
+Fazendo uma conexão
+-------------------
 
-You can get a DBAL Connection through the
-``Doctrine\DBAL\DriverManager`` class.
+Você pode fazer uma conexão DBAL através da classe ``Doctrine\DBAL\DriverManager``.
 
 .. code-block:: php
 
@@ -21,70 +20,65 @@ You can get a DBAL Connection through the
     );
     $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
 
-The ``DriverManager`` returns an instance of
-``Doctrine\DBAL\Connection`` which is a wrapper around the
-underlying driver connection (which is often a PDO instance).
+O ``DriverManager`` retorna uma instância da ``Doctrine\DBAL\Connection`` 
+que empacota a conexão do driver (que muitas vezes é uma instância PSO).
 
-The following sections describe the available connection parameters
-in detail.
+As seções seguintes descrevem os parâmetros de conexão disponíveis detalhadamente.
 
 Driver
 ~~~~~~
 
-The driver specifies the actual implementations of the DBAL
-interfaces to use. It can be configured in one of three ways:
+O driver especifica a real implementação das interfaces DBAL para 
+utilização. Ele pode ser configurado de uma das três formas:
 
+-  ``driver``: A implementação interna do driver que será utilizado. Os seguintes
+driver estão disponíveis atualmente:
 
--  ``driver``: The built-in driver implementation to use. The
-   following drivers are currently available:
-
-   -  ``pdo_mysql``: A MySQL driver that uses the pdo\_mysql PDO
+   -  ``pdo_mysql``: Um driver MySQL que usa a PDO pdo\_mysql
       extension.
-   -  ``pdo_sqlite``: An SQLite driver that uses the pdo\_sqlite PDO
+   -  ``pdo_sqlite``: Um driver SQLite que usa a PDO pdo\_sqlite
       extension.
-   -  ``pdo_pgsql``: A PostgreSQL driver that uses the pdo\_pgsql PDO
+   -  ``pdo_pgsql``: Um driver PostgreSQL que usa a PDO pdo\_pgsql
       extension.
-   -  ``pdo_oci``: An Oracle driver that uses the pdo\_oci PDO
+   -  ``pdo_oci``: Um driver Oracle que usa a PDO pdo\_oci
       extension.
-      **Note that this driver caused problems in our tests. Prefer the oci8 driver if possible.**
-   -  ``pdo_sqlsrv``: A Microsoft SQL Server driver that uses pdo\_sqlsrv PDO
-   -  ``oci8``: An Oracle driver that uses the oci8 PHP extension.
+      **Fique atento que esse driver causou problemas em nossos teste. Prefira usar
+      o driver oci8 se possível.**
+   -  ``pdo_sqlsrv``: Um driver Microsoft SQL Server que usa a PDO pdo\_sqlsrv
+   -  ``oci8``: Um driver Oracle que usa a extensão PHP oci8.
 
--  ``driverClass``: Specifies a custom driver implementation if no
-   'driver' is specified. This allows the use of custom drivers that
-   are not part of the Doctrine DBAL itself.
--  ``pdo``: Specifies an existing PDO instance to use.
+-  ``driverClass``: Especifica uma implementação de driver personalizada se não 
+tiver nenhum "driver" especificado. Isso permite o uso de drivers personalizados 
+que não fazem parte da própria DBAL.
+-  ``pdo``: Especifica uma instância PDO existente para utilização.
 
-Wrapper Class
-~~~~~~~~~~~~~
+Classe Wrapper
+~~~~~~~~~~~~~~
 
-By default a ``Doctrine\DBAL\Connection`` is wrapped around a
-driver ``Connection``. The ``wrapperClass`` option allows to
-specify a custom wrapper implementation to use, however, a custom
-wrapper class must be a subclass of ``Doctrine\DBAL\Connection``.
+A classe ``Doctrine\DBAL\Connection`` empacota por padrão um driver
+``Connection``. A opção ``wrapperClass`` permite especificar uma 
+implementação de wrapper personalizada, no entanto, uma wrapper
+personalizada deve ser uma subclasse da ``Doctrine\DBAL\Connection``.
 
-Connection Details
-~~~~~~~~~~~~~~~~~~
+Detalhes de Conexão
+~~~~~~~~~~~~~~~~~~~
 
-The connection details identify the database to connect to as well
-as the credentials to use. The connection details can differ
-depending on the used driver. The following sections describe the
-options recognized by each built-in driver.
+Os detalhes da conexão identificam o banco de dados e as credenciais 
+usadas na conexão. Os detalhes da conexão pode ser diferentes
+dependendo do driver utilizado. As seções seguintes descrevem as
+opções reconhecidas por cada driver.
 
-.. note::
+.. nota::
 
-    When using an existing PDO instance through the ``pdo``
-    option, specifying connection details is obviously not necessary.
-
+    Ao usar uma instância PDO através da opção ``pdo``, especificar 
+    detalhes de conexão não é necessário.
 
 pdo\_sqlite
 ^^^^^^^^^^^
 
 
--  ``user`` (string): Username to use when connecting to the
-   database.
--  ``password`` (string): Password to use when connecting to the
-   database.
+-  ``user`` (string): Usuário usádo para conectar no banco de dados.
+-  ``password`` (string): Senha usada para conectar no banco de dados.
 -  ``path`` (string): The filesystem path to the database file.
    Mutually exclusive with ``memory``. ``path`` takes precedence.
 -  ``memory`` (boolean): True if the SQLite database should be
@@ -95,72 +89,59 @@ pdo\_mysql
 ^^^^^^^^^^
 
 
--  ``user`` (string): Username to use when connecting to the
-   database.
--  ``password`` (string): Password to use when connecting to the
-   database.
--  ``host`` (string): Hostname of the database to connect to.
--  ``port`` (integer): Port of the database to connect to.
--  ``dbname`` (string): Name of the database/schema to connect to.
--  ``unix_socket`` (string): Name of the socket used to connect to
-   the database.
--  ``charset`` (string): The charset used when connecting to the
-   database.
+-  ``user`` (string): Usuário usádo para conectar no banco de dados.
+-  ``password`` (string): Senha usada para conectar no banco de dados.
+-  ``host`` (string): O hostname do servidor de banco de dados.
+-  ``port`` (integer): A porta usada para conectar no banco de dados.
+-  ``dbname`` (string): O nome da base de dados/schema para conectar no banco de dados.
+-  ``unix_socket`` (string): O nome do socket usado para conectar no banco de dados.
+-  ``charset`` (string): O charset usado para conectar na base de dados.
 
 pdo\_pgsql
 ^^^^^^^^^^
 
 
--  ``user`` (string): Username to use when connecting to the
-   database.
--  ``password`` (string): Password to use when connecting to the
-   database.
--  ``host`` (string): Hostname of the database to connect to.
--  ``port`` (integer): Port of the database to connect to.
--  ``dbname`` (string): Name of the database/schema to connect to.
+-  ``user`` (string): Usuário usádo para conectar no banco de dados.
+-  ``password`` (string): Senha usada para conectar no banco de dados.
+-  ``host`` (string): O hostname do servidor de banco de dados.
+-  ``port`` (integer): A porta usada para conectar no banco de dados.
+-  ``dbname`` (string): O nome da base de dados/schema para conectar no banco de dados.
 
-PostgreSQL behaves differently with regard to booleans when you use
-``PDO::ATTR_EMULATE_PREPARES`` or not. To switch from using ``'true'``
-and ``'false'`` as strings you can change to integers by using:
+O PostgreSQL se comporta diferente com valores booleanos quanto você usa ou não 
+``PDO::ATTR_EMULATE_PREPARES``. Para alterar o uso de ``'true'`` e ``'false'`` 
+como strings você pode mudar para inteiros usando: 
 ``$conn->getDatabasePlatform()->setUseBooleanTrueFalseStrings($flag)``.
 
 pdo\_oci / oci8
 ^^^^^^^^^^^^^^^
 
 
--  ``user`` (string): Username to use when connecting to the
-   database.
--  ``password`` (string): Password to use when connecting to the
-   database.
--  ``host`` (string): Hostname of the database to connect to.
--  ``port`` (integer): Port of the database to connect to.
--  ``dbname`` (string): Name of the database/schema to connect to.
--  ``charset`` (string): The charset used when connecting to the
-   database.
+-  ``user`` (string): Usuário usádo para conectar no banco de dados.
+-  ``password`` (string): Senha usada para conectar no banco de dados.
+-  ``host`` (string): O hostname do servidor de banco de dados.
+-  ``port`` (integer): A porta usada para conectar no banco de dados.
+-  ``dbname`` (string): O nome da base de dados/schema para conectar no banco de dados.
+-  ``charset`` (string): O charset usado para conectar na base de dados.
 
 pdo\_sqlsrv
 ^^^^^^^^^^
 
 
--  ``user`` (string): Username to use when connecting to the
-   database.
--  ``password`` (string): Password to use when connecting to the
-   database.
+-  ``user`` (string): Usuário usádo para conectar no banco de dados.
+-  ``password`` (string): Senha usada para conectar no banco de dados.
 -  ``host`` (string): Hostname of the database to connect to.
--  ``port`` (integer): Port of the database to connect to.
--  ``dbname`` (string): Name of the database/schema to connect to.
+-  ``port`` (integer): A porta usada para conectar no banco de dados.
+-  ``dbname`` (string): O nome da base de dados/schema para conectar no banco de dados.
 
-Custom Platform
-~~~~~~~~~~~~~~~
+Platforma Personalizada
+~~~~~~~~~~~~~~~~~~~~~~~
 
-Each built-in driver uses a default implementation of
-``Doctrine\DBAL\Platforms\AbstractPlatform``. If you wish to use a
-customized or custom implementation, you can pass a precreated
-instance in the ``platform`` option.
+Cada driver usa uma implementação padrão do ``Doctrine\DBAL\Platforms\AbstractPlatform``. 
+Se você quiser usar uma implementação customizada, você pode passar uma instância pré-criada
+na opção ``platform`` option.
 
-Custom Driver Options
-~~~~~~~~~~~~~~~~~~~~~
+Opções de Driver Personalizadas
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``driverOptions`` option allows to pass arbitrary options
-through to the driver. This is equivalent to the fourth argument of
-the `PDO constructor <http://php.net/manual/en/pdo.construct.php>`_.
+A opção ``driverOptions`` permite passar opções arbitrárias para o driver. 
+Isso é equivalente ao quarto argumento do `construtor PDO <http://php.net/manual/en/pdo.construct.php>`_.
