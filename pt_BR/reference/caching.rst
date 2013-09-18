@@ -1,10 +1,11 @@
 Caching
 =======
 
-A ``Doctrine\DBAL\Statement`` can automatically cache result sets.
+Um ``Doctrine\DBAL\Statement`` pode fazer o cache dos result sets automaticamente.
 
-For this to work an instance of ``Doctrine\Common\Cache\Cache`` must be provided.
-This can be set on the configuration object (optionally it can also be passed at query time):
+Para que isso funcione uma instância do ``Doctrine\Common\Cache\Cache`` é necessária.
+Isso pode ser setado no objeto de configuração (pode ser passado também na execução da query 
+opcionalmente):
 
 ::
 
@@ -13,10 +14,10 @@ This can be set on the configuration object (optionally it can also be passed at
     $config = $conn->getConfiguration();
     $config->setResultCacheImpl($cache);
 
-To get the result set of a query cached it is necessary to pass a
-``Doctrine\DBAL\Cache\QueryCacheProfile`` instance to the ``executeQuery`` or ``executeCacheQuery``
-instance. The difference between these two methods is that the former does not
-require this instance, while the later has this instance as a required parameter:
+Para pegar o result set de uma query que está em cache é necessário passar uma instância 
+``Doctrine\DBAL\Cache\QueryCacheProfile`` para a instância ``executeQuery`` ou ``executeCacheQuery``.
+A diferença entre esses dos métodos é que o primeiro não precisa da instância enquanto o último
+precisa da instância como um parâmetro obrigatório:
 
 ::
 
@@ -24,9 +25,8 @@ require this instance, while the later has this instance as a required parameter
     $stmt = $conn->executeQuery($query, $params, $types, new QueryCacheProfile(0, "some key"));
     $stmt = $conn->executeCacheQuery($query, $params, $types, new QueryCacheProfile(0, "some key"));
 
-It is also possible to pass in a the ``Doctrine\Common\Cache\Cache`` instance into the
-constructor of ``Doctrine\DBAL\Cache\QueryCacheProfile`` in which case it overrides
-the default cache instance:
+Também é possível passar em uma instância ``Doctrine\Common\Cache\Cache`` no construtor da 
+``Doctrine\DBAL\Cache\QueryCacheProfile``. Nesse caso ele substitui a instância padrão de cache:
 
 ::
 
@@ -34,9 +34,9 @@ the default cache instance:
     $cache = new \Doctrine\Common\Cache\FilesystemCache(__DIR__);
     new QueryCacheProfile(0, "some key", $cache);
 
-In order for the data to actually be cached its necessary to ensure that the entire
-result set is read (easiest way to ensure this is to use ``fetchAll``) and the statement
-object is closed:
+Para que todos os dados sejam realmente armazenados em cache é necessário garantir que o result set
+seja lido por inteiro (uma forma fácil de garantir isso é usar ``fetchAll``) e o objeto statement
+seja fechado:
 
 ::
 
@@ -46,6 +46,7 @@ object is closed:
     $stmt->closeCursor(); // at this point the result is cached
 
 
-.. warning::
+.. aviso::
 
-    When using the cache layer not all fetch modes are supported. See the code of the `ResultCacheStatement <https://github.com/doctrine/dbal/blob/master/lib/Doctrine/DBAL/Cache/ResultCacheStatement.php#L156>`_ for details.
+    Ao usar uma camada de cache nem todos os modos de fetch são suportados. Veja o código do 
+    `ResultCacheStatement <https://github.com/doctrine/dbal/blob/master/lib/Doctrine/DBAL/Cache/ResultCacheStatement.php#L156>`_ para detalhes.
