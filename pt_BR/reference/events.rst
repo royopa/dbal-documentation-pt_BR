@@ -1,33 +1,28 @@
-Events
-======
+Eventos
+=======
 
-Both ``Doctrine\DBAL\DriverManager`` and
-``Doctrine\DBAL\Connection`` accept an instance of
-``Doctrine\Common\EventManager``. The EventManager has a couple of
-events inside the DBAL layer that are triggered for the user to
-listen to.
+O ``Doctrine\DBAL\DriverManager`` e ``Doctrine\DBAL\Connection`` aceitam uma instância do
+``Doctrine\Common\EventManager``. O EventManager tem um par de eventos dentro da 
+camada DBAL que são acionados para o usuário os ouça.
 
-PostConnect Event
------------------
+Evento PostConnect
+------------------
 
-``Doctrine\DBAL\Events::postConnect`` is triggered right after the
-connection to the database is established. It allows to specify any
-relevant connection specific options and gives access to the
-``Doctrine\DBAL\Connection`` instance that is responsible for the
-connection management via an instance of
-``Doctrine\DBAL\Event\ConnectionEventArgs`` event arguments
-instance.
-
-Doctrine ships with one implementation for the "PostConnect" event:
+O ``Doctrine\DBAL\Events::postConnect`` é acionado logo que a conexão ao banco de dados
+for estabelecida. Ele permite especificar qualquer opção de conexão relevante e dá acesso à
+instância ``Doctrine\DBAL\Connection`` que é responsável pelo gerenciamento da conexão através
+de uma instância de argumentos de evento ``Doctrine\DBAL\Event\ConnectionEventArgs``.
 
 
--  ``Doctrine\DBAL\Event\Listeners\OracleSessionInit`` allows to
-   specify any number of Oracle Session related enviroment variables
-   that are set right after the connection is established.
+O Doctrine "ships" com uma implementação do evento "PostConnect":
 
-You can register events by subscribing them to the ``EventManager``
-instance passed to the Connection factory:
+-  ``Doctrine\DBAL\Event\Listeners\OracleSessionInit`` permite especificar qualquer quantidade 
+   de variáveis de ambiente de sessões Oracle logo após a conexão ser estabelecida.
+   
 
+Você pode registrar eventos assinando-os à instância ``EventManager`` passada na factory Connection:
+
+   
 .. code-block:: php
 
     <?php
