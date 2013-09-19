@@ -1,11 +1,11 @@
 SQL Query Builder
 =================
 
-Doctrine 2.1 ships with a powerful query builder for the SQL language. This QueryBuilder object has methods
-to add parts to an SQL statement. If you built the complete state you can execute it using the connection
-it was generated from. The API is roughly the same as that of the DQL Query Builder.
+O Doctrine 2.1 trabalha com um poderoso construtor de query para a linguagem SQL. Esse objeto QueryBuilder 
+tem métodos para incluir partes para uma instrução SQL. Se você construiu o estado completo você pode executá-lo
+usando a conexão que foi gerada. A API é mais ou menos a mesma que a do Query Builder DQL.
 
-You can access the QueryBuilder by calling ``Doctrine\DBAL\Connection#createQueryBuilder``:
+Você poder acessar o objeto QueryBuilder chamando ``Doctrine\DBAL\Connection#createQueryBuilder``:
 
 .. code-block:: php
 
