@@ -14,7 +14,7 @@ instância ``Doctrine\DBAL\Connection`` que é responsável pelo gerenciamento d
 de uma instância de argumentos de evento ``Doctrine\DBAL\Event\ConnectionEventArgs``.
 
 
-O Doctrine "ships" com uma implementação do evento "PostConnect":
+O Doctrine inclui uma implementação do evento "PostConnect":
 
 -  ``Doctrine\DBAL\Event\Listeners\OracleSessionInit`` permite especificar qualquer quantidade 
    de variáveis de ambiente de sessões Oracle logo após a conexão ser estabelecida.
