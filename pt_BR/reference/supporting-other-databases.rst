@@ -26,7 +26,7 @@ tornar o Doctrine um produto ainda melhor.
 Etapas de implementação em detalhe
 -----------------------------------------------------
 
-1. Adicione o atalho do seu driver inserindo o nome da sua classe em `Doctrine\DBAL\DriverManager`.
+1. Adicione o atalho do seu driver inserindo o nome da sua classe em ``Doctrine\DBAL\DriverManager``.
 2. Faça uma cópia dos tests/dbproperties.xml.dev e ajuste os valores para o atalho do seu driver e testdatabase.
 3. Crie três novas classes implementando ``\Doctrine\DBAL\Driver\Driver``, ``\Doctrine\DBAL\Driver\Statement``
    e ``Doctrine\DBAL\Driver``. Você pode dar uma olhada no driver ``Doctrine\DBAL\Driver\OCI8``.
