@@ -1,12 +1,18 @@
-Data Retrieval And Manipulation
-===============================
+Recuperação e Manipulação de Dados
+==================================
 
-Doctrine DBAL follows the PDO API very closely. If you have worked with PDO
-before you will get to know Doctrine DBAL very quickly. On top of the API provided
-by PDO there are tons of convenience functions in Doctrine DBAL.
+A Doctrine DBAL segue bastante a API PDO. Se você trabalhou com PDO antes você vai 
+conhecer a DBAL muito rapidamente. NO topo da API fornecida pela PDO hpa toneladas
+de funções convenientes na DBAL.
 
-Data Retrieval
---------------
+Recuperação de Dados
+--------------------
+
+Usar um banco de dados implica em recuperar dados. É o caso de uso principal de um banco de dados.
+Para esse propósito, cada vendor expõe uma API cliente que pode ser integrada dentro das linguagens
+de programação. O PHP tem uma camada de abstração genérica para esse tipo de API chamada PDO (PHP Data Objects).
+No entanto, por causa de divergências entre a comunidade PHP existem extensões nativas para 
+cada banco de dados e tem muito mais manutenção (OCI8 por exemplo).
 
 Using a database implies retrieval of data. It is the primary use-case of a database.
 For this purpose each database vendor exposes a Client API that can be integrated into
