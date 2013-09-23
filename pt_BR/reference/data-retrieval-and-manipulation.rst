@@ -14,20 +14,11 @@ de programação. O PHP tem uma camada de abstração genérica para esse tipo d
 No entanto, por causa de divergências entre a comunidade PHP existem extensões nativas para 
 cada banco de dados e tem muito mais manutenção (OCI8 por exemplo).
 
-Using a database implies retrieval of data. It is the primary use-case of a database.
-For this purpose each database vendor exposes a Client API that can be integrated into
-programming languages. PHP has a generic abstraction layer for this
-kind of API called PDO (PHP Data Objects). However because of disagreements
-between the PHP community there are often native extensions for each database
-vendor that are much more maintained (OCI8 for example).
+A API Doctrine DBAL é construída no topo da PDO e integra extensões nativas por envolvê-los na também na PDO. Se 
+você já tiver uma conexão aberta através do método ``Doctrine\DBAL\DriverManager::getConnection()`` você pode 
+começar usando essa API para recuperar dados facilmente.
 
-Doctrine DBAL API builds on top of PDO and integrates native extensions by
-wrapping them into the PDO API as well. If you already have an open connection
-through the ``Doctrine\DBAL\DriverManager::getConnection()`` method you
-can start using this API for data retrieval easily.
-
-Start writing an SQL query and pass it to the ``query()`` method of your
-connection:
+Começe escrevendo uma consulta SQL e passe para o método ``query()`` da sua conexão:
 
 .. code-block:: php
 
@@ -37,11 +28,10 @@ connection:
     $conn = DriverManager::getConnection($params, $config);
 
     $sql = "SELECT * FROM articles";
-    $stmt = $conn->query($sql); // Simple, but has several drawbacks
+    $stmt = $conn->query($sql); // Simples, mas com vários inconvenientes
 
-The query method executes the SQL and returns a database statement object.
-A database statement object can be iterated to retrieve all the rows that matched
-the query until there are no more rows:
+O método query executa o SQL e retorna um objeto database statement. Um database statement pode ser iterado
+para recuperar todas as linhas retornadas na consulta até que não haja mais linhas:
 
 .. code-block:: php
 
@@ -51,29 +41,26 @@ the query until there are no more rows:
         echo $row['headline'];
     }
 
-The query method is the most simple one for fetching data, but it also has
-several drawbacks:
+O método query é o mais simples para recuperação de dados, mas ele também tem vários inconvenientes:
 
--   There is no way to add dynamic parameters to the SQL query without modifying
-    ``$sql`` itself. This can easily lead to a category of security
-    holes called **SQL injection**, where a third party can modify the SQL executed 
-    and even execute their own queries through clever exploiting of the security hole.
--   **Quoting** dynamic parameters for an SQL query is tedious work and requires lots
-    of use of the ``Doctrine\DBAL\Connection#quote()`` method, which makes the
-    original SQL query hard to read/understand.
--   Databases optimize SQL queries before they are executed. Using the query method
-    you will trigger the optimization process over and over again, although
-    it could re-use this information easily using a technique called **prepared statements**.
+-   Não há nenhuma maneira de adicionar parâmetros dinâmicos na consulta SQL sem alterar o ``$sql`` em si. 
+    Isso pode permitir ataques de **SQL injection**, onde alguém pode modificar o SQL executado e até executar suas 
+    próprias consultas explorando essa falha de segurança.
+-   Fazer o **Quoting** de parâmetros dinâmicos para uma consulta SQL é uma tarefa tediosa e exige muito uso do 
+    método ``Doctrine\DBAL\Connection#quote()``, o que torna a consulta SQL difícil de ler e entender.
+-   Os bancos de dados otimizam as consultas SQL antes de elas serem executadas. Usando o método query você irá 
+    acionar o processo de otimização toda vez, embora ele pudesse reutilizar essa informação facilmente usando uma
+    técnica chamada **prepared statements**.
 
-This three arguments and some more technical details hopefully convinced you to investigate
-prepared statements for accessing your database. 
+Esperamos que estes três argumentos e alguns detalhes mais técnicos tenham convencido você a investigar o uso de 
+prepared statements para acessar sua base de dados.
 
-Dynamic Parameters and Prepared Statements
+Parâmetros Dinâmicos e Prepared Statements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Consider the previous query, now parameterized to fetch only a single article by id.
-Using **ext/mysql** (still the primary choice of MySQL access for many developers) you had to escape
-every value passed into the query using ``mysql_real_escape_string()`` to avoid SQL injection:
+Considere a consulta anterior, agora parametrizada para buscar apenas um único artigo pelo id.
+Usando **ext/mysql** (ainda a primeira opção de acesso ao MySQL para muitos desenvolvedores) você teria que 
+escapar cada valor passado na query usando ``mysql_real_escape_string()`` para evitar a SQL injection:
 
 .. code-block:: php
 
@@ -81,11 +68,11 @@ every value passed into the query using ``mysql_real_escape_string()`` to avoid 
     $sql = "SELECT * FROM articles WHERE id = '" . mysql_real_escape_string($id, $link) . "'";
     $rs = mysql_query($sql);
 
-If you start adding more and more parameters to a query (for example in UPDATE or INSERT statements)
-this approach might lead to complex to maintain SQL queries. The reason is simple, the actual
-SQL query is not clearly separated from the input parameters. Prepared statements separate
-these two concepts by requiring the developer to add **placeholders** to the SQL query (prepare) which
-are then replaced by their actual values in a second step (execute).
+Se você adicionar diversos parâmetros para uma query (por exemplo num UPDATE ou INSERT) essa abordagem pode 
+tornar difícil a manutenção das consultas SQL. A razão é simples, a consulta SQL real não é claramente separada
+dos parâmetros de entrada. Os prepared statements separam esses dois conceitos exigindo que o desenvolvedor 
+adicione **placeholders** para a query SQL (prepare) que em seguida são substituídos por seus valores reais num
+segundo passo (execute).
 
 .. code-block:: php
 
@@ -97,11 +84,11 @@ are then replaced by their actual values in a second step (execute).
     $stmt->bindValue(1, $id);
     $stmt->execute();
 
-Placeholders in prepared statements are either simple positional question marks (?) or named labels starting with
-a double-colon (:name1). You cannot mix the positional and the named approach. The approach
-using question marks is called positional, because the values are bound in order from left to right
-to any question mark found in the previously prepared SQL query. That is why you specify the
-position of the variable to bind into the ``bindValue()`` method:
+Os placeholders nos prepared statements são simples pontos de interrogação (?) ou labels nomeados com dois pontos 
+(:nome1). Você não pode misturar o posicionamento e a abordagem de labels. A abordagem usando pontos de interrogação
+é chamada de posicional, pois os valores estão ligados em ordem da esquerda para a direito para qualquer ponto de 
+interrogação encontrado na consulta SQL do prepared statement. É por isso que você deve especificar a posição da 
+variável para ligar no método ``bindValue()``:
 
 .. code-block:: php
 
@@ -114,7 +101,8 @@ position of the variable to bind into the ``bindValue()`` method:
     $stmt->bindValue(2, $status);
     $stmt->execute();
 
-Named parameters have the advantage that their labels can be re-used and only need to be bound once:
+Os parâmetros nomeados tem a vantagem de que seus labels podem ser reutilizados e só precisam são necessários
+uma vez:
 
 .. code-block:: php
 
@@ -126,17 +114,17 @@ Named parameters have the advantage that their labels can be re-used and only ne
     $stmt->bindValue("name", $name);
     $stmt->execute();
 
-The following section describes the API of Doctrine DBAL with regard to prepared statements.
+A seção seguinte descreve a API da Doctrine DBAL no que diz respeito às prepared statements.
 
-.. note::
+.. nota::
 
-    Support for positional and named prepared statements varies between the different
-    database extensions. PDO implements its own client side parser so that both approaches
-    are feasible for all PDO drivers. OCI8/Oracle only supports named parameters, but
-    Doctrine implements a client side parser to allow positional parameters also.
+    O suporte para prepared statements posicionais e nomeados variam entre as diferentes extensões 
+    de banco de dados. A PDO implementa seu próprio parser do lado cliente para que ambas as abordagens
+    sejam viáveis para todos os drivers PDO. O OCI8/Oracle suporta somente parâmetros nomeados, mas o 
+    Doctrine implementa um parser do lado cliente para também permitir parâmetros posicionais.
 
-Using Prepared Statements
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Usando Prepared Statements
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 There are three low-level methods on ``Doctrine\DBAL\Connection`` that allow you to
 use prepared statements:
