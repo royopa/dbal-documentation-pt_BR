@@ -126,66 +126,68 @@ A seção seguinte descreve a API da Doctrine DBAL no que diz respeito às prepa
 Usando Prepared Statements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-There are three low-level methods on ``Doctrine\DBAL\Connection`` that allow you to
-use prepared statements:
+Existem três métodos na ``Doctrine\DBAL\Connection`` que permite que você utilize os prepared 
+statements:
 
--   ``prepare($sql)`` - Create a prepared statement of the type ``Doctrine\DBAL\Statement``.
-    Using this method is preferred if you want to re-use the statement to execute several
-    queries with the same SQL statement only with different parameters.
--   ``executeQuery($sql, $params, $types)`` - Create a prepared statement for the passed
-    SQL query, bind the given params with their binding types and execute the query.
-    This method returns the executed prepared statement for iteration and is useful
-    for SELECT statements.
--   ``executeUpdate($sql, $params, $types)`` - Create a prepared statement for the passed
-    SQL query, bind the given params with their binding types and execute the query.
-    This method returns the number of affected rows by the executed query and is useful
-    for UPDATE, DELETE and INSERT statements.
+-   ``prepare($sql)`` - Cria um prepared statement do tipo ``Doctrine\DBAL\Statement``.
+    É preferível usar esse método se você quiser reutilizar o statement para executar várias queries 
+    com o mesmo SQL somente com parâmetros diferentes.
+-   ``executeQuery($sql, $params, $types)`` - Cria um prepared statement para a query passada, vincula
+    os parâmetros com seus tipos e executa a query.
+    Esse método retorna o prepared statement executado para iteração e é útil para stements de SELECT.
+-   ``executeUpdate($sql, $params, $types)`` - Cria um prepared statement para a query passada, vincula
+    os parâmetros com seus tipos e executa a query.
+    Esse método retorna a quantidade de linhas afetadas pela query executada e é útil para statements de 
+    UPDATE, DELETE e INSERT.
 
-A simple usage of prepare was shown in the previous section, however it is useful to
-dig into the features of a ``Doctrine\DBAL\Statement`` a little bit more. There are essentially
-two different types of methods available on a statement. Methods for binding parameters and types
-and methods to retrieve data from a statement.
+Uma utilização simples do prepare foi mostrada na seção anterior, no entando é útil detalhar as
+características do ``Doctrine\DBAL\Statement`` um pouco mais. Existem essencialmente dois tipos
+diferentes de métodos disponíveis em um statement. São métodos para a ligação de parâmetros e tipos
+e métodos para recuperar dados a partir de um statement.
 
--   ``bindValue($pos, $value, $type)`` - Bind a given value to the positional or named parameter
-    in the prepared statement.
--   ``bindParam($pos, &$param, $type)`` - Bind a given reference to the positional or
-    named parameter in the prepared statement.
+-   ``bindValue($pos, $value, $type)`` - Faz a ligação de um determinado valor para o parâmetro posicional ou 
+    nomeado no prepared statement.
+-   ``bindParam($pos, &$param, $type)`` - Faz a ligação de uma determinada referência para o parâmetro posicional
+    ou nomeado no prepared statement.
 
-If you are finished with binding parameters you have to call ``execute()`` on the statement, which
-will trigger a query to the database. After the query is finished you can access the results
-of this query using the fetch API of a statement:
+Se você terminou de fazer a ligação dos parâmetros você tem que chamar ``execute()`` no statement, que irá 
+desencadear uma consulta no banco de dados. Após a conclusão da consulta você pode acessar os 
+resultados da query usando a API fetch de um statement:
 
--   ``fetch($fetchStyle)`` - Retrieves the next row from the statement or false if there are none.
-    Moves the pointer forward one row, so that consecutive calls will always return the next row.
--   ``fetchColumn($column)`` - Retrieves only one column of the next row specified by column index.
-    Moves the pointer forward one row, so that consecutive calls will always return the next row.
--   ``fetchAll($fetchStyle)`` - Retrieves all rows from the statement.
+-   ``fetch($fetchStyle)`` - Recupera a próxima linha do statement ou falso se não existir pŕoxima linha.
+    Move o cursor para frente de uma linha, de modo que chamadas consecutivas sempre retornará a próxima 
+    linha.
+-   ``fetchColumn($column)`` - Recupera apenas uma coluna da próxima linha especificada pelo índice da
+    coluna.
+    Move o cursor para frente de uma linha, de modo que chamadas consecutivas sempre retornará a próxima 
+    linha.
+-   ``fetchAll($fetchStyle)`` - Recupera todas as linhas de um statement.
 
-The fetch API of a prepared statement obviously works only for ``SELECT`` queries.
+É óbvio que a API fetch de um prepared statement funciona somente para ``SELECT``.
 
-If you find it tedious to write all the prepared statement code you can alternatively use
-the ``Doctrine\DBAL\Connection#executeQuery()`` and ``Doctrine\DBAL\Connection#executeUpdate()``
-methods. See the API section below on details how to use them.
+Se você achar tedioso ter escrever todo o código do prepared statement você pode alternativamente
+usar os métodos ``Doctrine\DBAL\Connection#executeQuery()`` e ``Doctrine\DBAL\Connection#executeUpdate()``.
+Veja a seção API seguinte para detalhes de como usá-los.
 
-Additionally there are lots of convenience methods for data-retrieval and manipulation
-on the Connection, which are all described in the API section below.
+Adicionalmente existem vários métodos de conveniência para recuperação e manipulação em uma Connection, 
+que serão descritas na seção API seguinte.
 
-Binding Types
--------------
+Fazendo a Ligação de Tipos
+--------------------------
 
-Doctrine DBAL extends PDOs handling of binding types in prepared statement
-considerably. Besides the well known ``\PDO::PARAM_*`` constants you
-can make use of two very powerful additional features.
+A Doctrine DBAL extende a manipulação de vinculação de tipos da PDO de forma considerável.
+Além da conhecida constante ``\PDO::PARAM_*`` você pode fazer o uso de duas características 
+adicionais muito poderosas.
 
-Doctrine\DBAL\Types Conversion
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Conversão Doctrine\DBAL\Types
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you don't specify an integer (through a ``PDO::PARAM*`` constant) to
-any of the parameter binding methods but a string, Doctrine DBAL will
-ask the type abstraction layer to convert the passed value from
-its PHP to a database representation. This way you can pass ``\DateTime``
-instances to a prepared statement and have Doctrine convert them 
-to the appropriate vendors database format:
+Se você não especificar um número inteiro (através de uma constante ``PDO::PARAM*``) para 
+qualquer um dos métodos de ligação de parâmetros mas especificar uma string, a Doctrine DBAL
+irá solicitar o tipo a camada de abstração para converter o valor passado de seu código PHP 
+para uma representação de dados. Desta forma, você pode passar instâncias ``\DateTime`` para
+um prepared statements e o Doctrine tem que convertê-los para o formato de base de dados 
+adequado:
 
 .. code-block:: php
 
@@ -195,19 +197,20 @@ to the appropriate vendors database format:
     $stmt->bindValue(1, $date, "datetime");
     $stmt->execute();
 
-If you take a look at ``Doctrine\DBAL\Types\DateTimeType`` you will see that
-parts of the conversion is delegated to a method on the current database platform,
-which means this code works independent of the database you are using.
+Se você der uma olhada em ``Doctrine\DBAL\Types\DateTimeType`` você verá que partes da 
+covnersão é delegada para um método na plataforma de banco de dados atual, o que 
+significa que esse código funciona independente do banco de dados que você está 
+usando.
 
-.. note::
+.. nota::
 
-    Be aware this type conversion only works with ``Statement#bindValue()``,
-    ``Connection#executeQuery()`` and ``Connection#executeUpdate()``. It
-    is not supported to pass a doctrine type name to ``Statement#bindParam()``,
-    because this would not work with binding by reference.
+    Esteja ciente que este tipo de conversão só funciona com ``Statement#bindValue()``,
+    ``Connection#executeQuery()`` e ``Connection#executeUpdate()``. Ele não é suportado
+    para passar um nome de tipo do doctrine para o ``Statement#bindParam()``, porque 
+    isso não iria funcionar com a ligação por referência.
 
-List of Parameters Conversion
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Lista de Parâmetros de Conversão
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. note::
 
