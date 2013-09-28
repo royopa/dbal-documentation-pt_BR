@@ -179,8 +179,8 @@ A Doctrine DBAL extende a manipulação de vinculação de tipos da PDO de forma
 Além da conhecida constante ``\PDO::PARAM_*`` você pode fazer o uso de duas características 
 adicionais muito poderosas.
 
-Conversão Doctrine\DBAL\Types
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A Conversão de tipos Doctrine\DBAL\Types
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Se você não especificar um número inteiro (através de uma constante ``PDO::PARAM*``) para 
 qualquer um dos métodos de ligação de parâmetros mas especificar uma string, a Doctrine DBAL
@@ -197,14 +197,14 @@ adequado:
     $stmt->bindValue(1, $date, "datetime");
     $stmt->execute();
 
-Se você der uma olhada em ``Doctrine\DBAL\Types\DateTimeType`` você verá que partes da 
-covnersão é delegada para um método na plataforma de banco de dados atual, o que 
-significa que esse código funciona independente do banco de dados que você está 
+Se você der uma olhada em ``Doctrine\DBAL\Types\DateTimeType`` você verá que parte da 
+conversão é delegada para um método na plataforma de banco de dados que está sendo 
+usada, o que significa que esse código funciona independente do banco de dados que você está 
 usando.
 
 .. nota::
 
-    Esteja ciente que este tipo de conversão só funciona com ``Statement#bindValue()``,
+    Esteja ciente que esse tipo de conversão só funciona com ``Statement#bindValue()``,
     ``Connection#executeQuery()`` e ``Connection#executeUpdate()``. Ele não é suportado
     para passar um nome de tipo do doctrine para o ``Statement#bindParam()``, porque 
     isso não iria funcionar com a ligação por referência.
@@ -212,20 +212,20 @@ usando.
 Lista de Parâmetros de Conversão
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. note::
+.. nota::
 
-    This is a Doctrine 2.1 feature.
+    Isso é uma característica do Doctrine 2.1.
 
-One rather annoying bit of missing functionality in SQL is the support for lists of parameters.
-You cannot bind an array of values into a single prepared statement parameter. Consider
-the following very common SQL statement:
+Uma funcionalidade que falta no SQL é o suporte para lista de parâmetros. Você não
+pode vincular um array de valores para um único parâmetro do prepared statement. Considere
+o statement SQL muito comum:
 
 .. code-block:: sql
 
     SELECT * FROM articles WHERE id IN (?)
 
-Since you are using an ``IN`` expression you would really like to use it in the following way
-(and I guess everybody has tried to do this once in his life, before realizing it doesn't work):
+Como você está usando uma expressão ``IN`` você com certeza gostaria de usá-la da seguinte maneira 
+(e acho que todo mundo já tentou fazer isso uma vez na vida, antes de perceber que não funciona):
 
 .. code-block:: php
 
@@ -235,20 +235,19 @@ Since you are using an ``IN`` expression you would really like to use it in the 
     $stmt->bindValue(1, array(1, 2, 3, 4, 5, 6));
     $stmt->execute();
 
-Implementing a generic way to handle this kind of query is tedious work. This is why most
-developers fallback to inserting the parameters directly into the query, which can open
-SQL injection possibilities if not handled carefully.
+Implementar uma forma genérica para lidar com esse tipo de query é uma tarefa chata.
+É por isso que muitos desenvolvedores inserem os parâmetros diretamente na query, o que
+pode abrir possibildiades de SQL injection se não for tratada com cuidado.
 
-Doctrine DBAL implements a very powerful parsing process that will make this kind of prepared
-statement possible natively in the binding type system.
-The parsing necessarily comes with a performance overhead, but only if you really use a list of parameters.
-There are two special binding types that describe a list of integers or strings:
+A Doctrine DBAL implementa um processo de análise muito poderoso que fará que tornará esse tipo de prepared statement possível nativamente no sistema de tipos 
+de ligação.
+O parsing necessariamente vem com uma sobrecarga de desempenho, mas somente se você realmente usar uma lista de parâmetros.
+Existem dois tipos de tipos de ligação especiais que desvrevem uma lista de inteiros ou strings:
 
 -   ``\Doctrine\DBAL\Connection::PARAM_INT_ARRAY``
 -   ``\Doctrine\DBAL\Connection::PARAM_STR_ARRAY``
 
-Using one of this constants as a type you can activate the SQLParser inside Doctrine that rewrites
-the SQL and flattens the specified values into the set of parameters. Consider our previous example:
+Usando uma destas constantes como um tipo você pode ativar o SQLParser dentro do Doctrine que reescreve o SQL e achata os valores especificados para o conjunto de parâmetros. Considere o exemplo anterior:
 
 .. code-block:: php
 
@@ -258,9 +257,7 @@ the SQL and flattens the specified values into the set of parameters. Consider o
         array(\Doctrine\DBAL\Connection::PARAM_INT_ARRAY)
     );
 
-The SQL statement passed to ``Connection#executeQuery`` is not the one actually passed to the
-database. It is internally rewritten to look like the following explicit code that could
-be specified as well:
+O statement SQL passado para ``Connection#executeQuery`` não é o único realmente passado para o banco de dados. Ele é internamente reescrito para se parecer com o seguinte código explícito que poderia ser especificado, bem como:
 
 .. code-block:: php
 
@@ -271,27 +268,21 @@ be specified as well:
         array(\PDO::PARAM_INT, \PDO::PARAM_INT, \PDO::PARAM_INT, \PDO::PARAM_INT, \PDO::PARAM_INT, \PDO::PARAM_INT)
     );
 
-This is much more complicated and is ugly to write generically.
+Isso é muito mais complicado e é feio escrever genericamente.
 
-.. note::
+.. nota::
 
-    The parameter list support only works with ``Doctrine\DBAL\Connection::executeQuery()``
-    and ``Doctrine\DBAL\Connection::executeUpdate()``, NOT with the binding methods of
-    a prepared statement.
+    O parâmetro list support somente trabalhad com ``Doctrine\DBAL\Connection::executeQuery()`` e ``Doctrine\DBAL\Connection::executeUpdate()``, NÃO com os métodos de binding de um prepared statement.
 
 API
 ---
 
-The DBAL contains several methods for executing queries against
-your configured database for data retrieval and manipulation. Below
-we'll introduce these methods and provide some examples for each of
-them.
+O DBAL contém vários métodos para executar queries contra o banco de dados configurado para recuperação e manipulação de dados. Abaixo vamos apresentar os métodos e fornecer alguns exemplos para cada um deles.
 
 prepare()
 ~~~~~~~~~
 
-Prepare a given SQL statement and return the
-``\Doctrine\DBAL\Driver\Statement`` instance:
+Prepara o dado statement SQL e retorna a instância ``\Doctrine\DBAL\Driver\Statement``:
 
 .. code-block:: php
 
@@ -312,8 +303,7 @@ Prepare a given SQL statement and return the
 executeUpdate()
 ~~~~~~~~~~~~~~~
 
-Executes a prepared statement with the given SQL and parameters and
-returns the affected rows count:
+Executa o prepared statement com o dado SQL e os parâmetros e retorna a quantidade de linhas afetadas:
 
 .. code-block:: php
 
@@ -321,16 +311,12 @@ returns the affected rows count:
     $count = $conn->executeUpdate('UPDATE user SET username = ? WHERE id = ?', array('jwage', 1));
     echo $count; // 1
 
-The ``$types`` variable contains the PDO or Doctrine Type constants
-to perform necessary type conversions between actual input
-parameters and expected database values. See the
-`Types <./types#type-conversion>`_ section for more information.
+A variável ``$types`` contém a constante PDO ou Doctrine Type para realizar a conversão de tipos necessária entre a entrada de valores real e os valores esperados do banco de dados. Veja a seção `Types <./types#type-conversion>`_ para mais informações.
 
 executeQuery()
 ~~~~~~~~~~~~~~
 
-Creates a prepared statement for the given SQL and passes the
-parameters to the execute method, then returning the statement:
+Cria um prepared statement para a dada SQL e passa os parâmetros para o método execute, retornando em seguida o statement:
 
 .. code-block:: php
 
@@ -345,15 +331,12 @@ parameters to the execute method, then returning the statement:
     )
     */
 
-The ``$types`` variable contains the PDO or Doctrine Type constants
-to perform necessary type conversions between actual input
-parameters and expected database values. See the
-`Types <./types#type-conversion>`_ section for more information.
+A variável ``$types`` contém a constante PDO ou Doctrine Type para realizar a conversão de tipos necessária entre a entrada de valores real e os valores esperados do banco de dados. Veja a seção `Types <./types#type-conversion>`_ para mais informações.
 
 fetchAll()
 ~~~~~~~~~~
 
-Execute the query and fetch all results into an array:
+Executa a query e armazena todos os resultados em um array:
 
 .. code-block:: php
 
@@ -372,7 +355,7 @@ Execute the query and fetch all results into an array:
 fetchArray()
 ~~~~~~~~~~~~
 
-Numeric index retrieval of first result row of the given query:
+Recuperação númerica dos índices da primeira linha do resultado da query dada:
 
 .. code-block:: php
 
@@ -389,7 +372,7 @@ Numeric index retrieval of first result row of the given query:
 fetchColumn()
 ~~~~~~~~~~~~~
 
-Retrieve only the given column of the first result row.
+Recupera apenas a coluna dada da primeira linha do resultado.
 
 .. code-block:: php
 
@@ -400,7 +383,7 @@ Retrieve only the given column of the first result row.
 fetchAssoc()
 ~~~~~~~~~~~~
 
-Retrieve assoc row of the first result row.
+Recupera um array da primeira linha do resultado.
 
 .. code-block:: php
 
@@ -413,13 +396,12 @@ Retrieve assoc row of the first result row.
     )
     */
 
-There are also convenience methods for data manipulation queries:
+Existem também métodos de conveniência para queries de manipulação de dados:
 
 delete()
 ~~~~~~~~~
 
-Delete all rows of a table matching the given identifier, where
-keys are column names.
+Exclui todas as linhas da tabela que corresponderem com o dado identificador, onde as chaves são os nomes da coluna.
 
 .. code-block:: php
 
@@ -430,8 +412,7 @@ keys are column names.
 insert()
 ~~~~~~~~~
 
-Insert a row into the given table name using the key value pairs of
-data.
+Insere uma linha na tabela dada usando os pares de dados chave-valor.
 
 .. code-block:: php
 
@@ -442,8 +423,7 @@ data.
 update()
 ~~~~~~~~~
 
-Update all rows for the matching key value identifiers with the
-given data.
+Atualiza todas as linhas da tabela que corresponderem com o identificador com os dados passados.
 
 .. code-block:: php
 
@@ -451,17 +431,13 @@ given data.
     $conn->update('user', array('username' => 'jwage'), array('id' => 1));
     // UPDATE user (username) VALUES (?) WHERE id = ? (jwage, 1)
 
-By default the Doctrine DBAL does no escaping. Escaping is a very
-tricky business to do automatically, therefore there is none by
-default. The ORM internally escapes all your values, because it has
-lots of metadata available about the current context. When you use
-the Doctrine DBAL as standalone, you have to take care of this
-yourself. The following methods help you with it:
+Por padrão, o Doctrine DBAL não faz escaping. Escaping é um négócio muito complicado para fazer automaticamente, portanto, não existe nenhum por padrão. A ORM internamente faz escape de todos os seus valores, porque ele tem lotes de metadados disponíveis sobre o contexto atual. Quando você usa a Doctrine DBAL sozinha, você tem que cuidar disso você mesmo. Os seguintes métodos podem te ajudar com isso:
+
 
 quote()
 ~~~~~~~~~
 
-Quote a value:
+Faz quote de um valor:
 
 .. code-block:: php
 
@@ -472,7 +448,7 @@ Quote a value:
 quoteIdentifier()
 ~~~~~~~~~~~~~~~~~
 
-Quote an identifier according to the platform details.
+Faz quote de um identificador de acordo com os detalhes da plataforma.
 
 .. code-block:: php
 
